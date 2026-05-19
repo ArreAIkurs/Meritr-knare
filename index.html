@@ -43,6 +43,24 @@
   <div class="w-full max-w-5xl glass rounded-3xl shadow-2xl p-8 animate-fade">
 
     <div class="text-center mb-10">
+      <div class="mb-6 max-w-md mx-auto">
+        <label class="block text-slate-300 mb-3 font-medium">
+          Välj gymnasieprogram
+        </label>
+
+        <select
+          id="programSelect"
+          onchange="loadProgram()"
+          class="w-full bg-white/10 border border-white/10 rounded-2xl p-4 text-white outline-none"
+        >
+          <option value="">Välj program</option>
+          <option value="natur">Naturvetenskapsprogrammet</option>
+          <option value="teknik">Teknikprogrammet</option>
+          <option value="ekonomi">Ekonomiprogrammet</option>
+          <option value="samhalle">Samhällsvetenskapsprogrammet</option>
+          <option value="estet">Estetiska programmet</option>
+        </select>
+      </div>
       <h1 class="text-4xl md:text-5xl font-extrabold mb-3 bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
         Gymnasie Meritkalkylator
       </h1>
@@ -118,6 +136,67 @@
   <script>
     const table = document.getElementById('courseTable');
 
+    const programs = {
+      natur: [
+        ['Svenska 1', 'C', 100],
+        ['Svenska 2', 'C', 100],
+        ['Svenska 3', 'C', 100],
+        ['Engelska 5', 'C', 100],
+        ['Engelska 6', 'C', 100],
+        ['Matematik 1c', 'C', 100],
+        ['Matematik 2c', 'C', 100],
+        ['Matematik 3c', 'C', 100],
+        ['Biologi 1', 'C', 100],
+        ['Kemi 1', 'C', 100],
+        ['Fysik 1', 'C', 150]
+      ],
+
+      teknik: [
+        ['Svenska 1', 'C', 100],
+        ['Svenska 2', 'C', 100],
+        ['Svenska 3', 'C', 100],
+        ['Engelska 5', 'C', 100],
+        ['Engelska 6', 'C', 100],
+        ['Matematik 1c', 'C', 100],
+        ['Matematik 2c', 'C', 100],
+        ['Matematik 3c', 'C', 100],
+        ['Fysik 1', 'C', 150],
+        ['Teknik 1', 'C', 150]
+      ],
+
+      ekonomi: [
+        ['Svenska 1', 'C', 100],
+        ['Svenska 2', 'C', 100],
+        ['Svenska 3', 'C', 100],
+        ['Engelska 5', 'C', 100],
+        ['Engelska 6', 'C', 100],
+        ['Matematik 1b', 'C', 100],
+        ['Matematik 2b', 'C', 100],
+        ['Företagsekonomi 1', 'C', 100],
+        ['Privatjuridik', 'C', 100]
+      ],
+
+      samhalle: [
+        ['Svenska 1', 'C', 100],
+        ['Svenska 2', 'C', 100],
+        ['Svenska 3', 'C', 100],
+        ['Engelska 5', 'C', 100],
+        ['Engelska 6', 'C', 100],
+        ['Matematik 1b', 'C', 100],
+        ['Samhällskunskap 1b', 'C', 100],
+        ['Historia 1b', 'C', 100]
+      ],
+
+      estet: [
+        ['Svenska 1', 'C', 100],
+        ['Svenska 2', 'C', 100],
+        ['Engelska 5', 'C', 100],
+        ['Engelska 6', 'C', 100],
+        ['Matematik 1b', 'C', 100],
+        ['Estetisk kommunikation', 'C', 100]
+      ]
+    };
+
     const gradeValues = {
       A: 20,
       B: 17.5,
@@ -171,6 +250,20 @@
       `;
 
       table.appendChild(row);
+    }
+
+    function loadProgram() {
+      const selected = document.getElementById('programSelect').value;
+
+      table.innerHTML = '';
+
+      if (!selected || !programs[selected]) return;
+
+      programs[selected].forEach(course => {
+        addCourse(course[0], course[1], course[2]);
+      });
+
+      calculateMerit();
     }
 
     function calculateMerit() {
