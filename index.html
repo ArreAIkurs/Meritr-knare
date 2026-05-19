@@ -100,11 +100,16 @@
       </button>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-6 mt-10">
+    <div class="grid md:grid-cols-4 gap-6 mt-10">
 
       <div class="glass rounded-2xl p-6 text-center">
         <p class="text-slate-300 mb-2">Jämförelsetal</p>
         <h2 id="average" class="text-3xl font-bold">0.00</h2>
+      </div>
+
+      <div class="glass rounded-2xl p-6 text-center">
+        <p class="text-slate-300 mb-2">Totala Gymnasiepoäng</p>
+        <h2 id="totalPointsDisplay" class="text-3xl font-bold">0 p</h2>
       </div>
 
       <div class="glass rounded-2xl p-6 text-center">
@@ -206,6 +211,50 @@
       F: 0,
     };
 
+    const availableCourses = [
+      ['Psykologi 1', 50],
+      ['Psykologi 2a', 50],
+      ['Matematik 1a', 100],
+      ['Matematik 1b', 100],
+      ['Matematik 1c', 100],
+      ['Matematik 2a', 100],
+      ['Matematik 2b', 100],
+      ['Matematik 2c', 100],
+      ['Matematik 3b', 100],
+      ['Matematik 3c', 100],
+      ['Matematik 4', 100],
+      ['Engelska 5', 100],
+      ['Engelska 6', 100],
+      ['Engelska 7', 100],
+      ['Svenska 1', 100],
+      ['Svenska 2', 100],
+      ['Svenska 3', 100],
+      ['Historia 1a1', 50],
+      ['Historia 1b', 100],
+      ['Samhällskunskap 1a1', 50],
+      ['Samhällskunskap 1b', 100],
+      ['Biologi 1', 100],
+      ['Biologi 2', 100],
+      ['Fysik 1', 150],
+      ['Fysik 2', 100],
+      ['Kemi 1', 100],
+      ['Kemi 2', 100],
+      ['Naturkunskap 1b', 100],
+      ['Religionskunskap 1', 50],
+      ['Privatjuridik', 100],
+      ['Företagsekonomi 1', 100],
+      ['Entreprenörskap', 100],
+      ['Moderna språk 1', 100],
+      ['Moderna språk 2', 100],
+      ['Moderna språk 3', 100],
+      ['Moderna språk 4', 100],
+      ['Idrott och hälsa 1', 100],
+      ['Programmering 1', 100],
+      ['Webbutveckling 1', 100],
+      ['Teknik 1', 150],
+      ['Estetisk kommunikation', 100]
+    ];
+
     function addCourse(course = '', grade = 'A', points = 100) {
       const row = document.createElement('tr');
       row.className = 'animate-fade';
@@ -214,10 +263,16 @@
         <td class="p-4">
           <input
             type="text"
+            list="courseOptions"
             placeholder="Ex. Matematik 2"
             value="${course}"
+            onchange="updatePoints(this)"
             class="w-full bg-white/10 border border-white/10 rounded-xl p-3 outline-none"
           />
+
+          <datalist id="courseOptions">
+            ${availableCourses.map(c => `<option value="${c[0]}"></option>`).join('')}
+          </datalist>
         </td>
 
         <td class="p-4">
@@ -241,7 +296,7 @@
 
         <td class="p-4 text-right">
           <button
-            onclick="this.closest('tr').remove()"
+            onclick="removeCourse(this)"
             class="bg-red-500 hover:bg-red-400 transition px-4 py-2 rounded-xl font-semibold"
           >
             Ta bort
@@ -250,6 +305,20 @@
       `;
 
       table.appendChild(row);
+
+      calculateMerit();
+    }
+
+    function updatePoints(input) {
+      const selectedCourse = input.value;
+      const row = input.closest('tr');
+      const pointsInput = row.querySelector('input[type="number"]');
+
+      const found = availableCourses.find(c => c[0] === selectedCourse);
+
+      if (found) {
+        pointsInput.value = found[1];
+      }
     }
 
     function loadProgram() {
@@ -263,6 +332,11 @@
         addCourse(course[0], course[1], course[2]);
       });
 
+      calculateMerit();
+    }
+
+    function removeCourse(button) {
+      button.closest('tr').remove();
       calculateMerit();
     }
 
@@ -289,6 +363,7 @@
       if (total > 22.5) total = 22.5;
 
       document.getElementById('average').innerText = average.toFixed(2);
+      document.getElementById('totalPointsDisplay').innerText = totalPoints + ' p';
       document.getElementById('total').innerText = total.toFixed(2);
     }
 
